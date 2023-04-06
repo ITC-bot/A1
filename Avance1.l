@@ -2,6 +2,7 @@
 #include <stdio.h>
 int linea = 1;
 int num_token = 1;
+int constantesValores = 400;
 %}
 
 /* Definición de tokens */
@@ -34,6 +35,10 @@ VALUES { printf("%d\t%d\t%s\t1\t29\n", num_token++, linea, yytext); BEGIN(RESERV
 "(" { printf("%d\t%d\t%s\t5\t52\n", num_token++, linea, yytext); }
 ")" { printf("%d\t%d\t%s\t5\t53\n", num_token++, linea, yytext); }
 "'" { printf("%d\t%d\t%s\t5\t54\n", num_token++, linea, yytext); }
+[[:alpha:]_][[:alnum:]_]*    { if(yytext[0] != '\'') printf("%d\t%d\t%s\t401\t62\n", num_token++, linea, yytext); }
+’[[:alpha:]_][[:alnum:]_]*|[[:digit:]]+[[:alpha:]][[:alnum:]_]*’ { printf("%d\t%d\t%s\t0\t62\n", num_token++, linea, yytext); BEGIN(RESERVED); }
+
+[0-9]+   { printf("%d\t%d\t%s\t6\t61\n", num_token++, linea, yytext); BEGIN(RESERVED); }
 .|\n { if (*yytext == '\n') linea++; }
 %%
 
