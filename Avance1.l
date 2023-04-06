@@ -1,31 +1,46 @@
 %{
 #include <stdio.h>
-#include <string.h>
+int linea = 1;
+int num_token = 1;
 %}
 
-%option noyywrap
+/* Definición de tokens */
+%s RESERVED
 
+/* Palabras reservadas */
+%%
+SELECT { printf("%d\t%d\t%s\t1\t10\n", num_token++, linea, yytext); BEGIN(RESERVED); }
+FROM { printf("%d\t%d\t%s\t1\t11\n", num_token++, linea, yytext); BEGIN(RESERVED); }
+WHERE { printf("%d\t%d\t%s\t1\t12\n", num_token++, linea, yytext); BEGIN(RESERVED); }
+IN { printf("%d\t%d\t%s\t1\t13\n", num_token++, linea, yytext); BEGIN(RESERVED); }
+AND { printf("%d\t%d\t%s\t1\t14\n", num_token++, linea, yytext); BEGIN(RESERVED); }
+OR { printf("%d\t%d\t%s\t1\t15\n", num_token++, linea, yytext); BEGIN(RESERVED); }
+CREATE { printf("%d\t%d\t%s\t1\t16\n", num_token++, linea, yytext); BEGIN(RESERVED); }
+TABLE { printf("%d\t%d\t%s\t1\t17\n", num_token++, linea, yytext); BEGIN(RESERVED); }
+CHAR { printf("%d\t%d\t%s\t1\t18\n", num_token++, linea, yytext); BEGIN(RESERVED); }
+NUMERIC { printf("%d\t%d\t%s\t1\t19\n", num_token++, linea, yytext); BEGIN(RESERVED); }
+NOT { printf("%d\t%d\t%s\t1\t20\n", num_token++, linea, yytext); BEGIN(RESERVED); }
+NULL { printf("%d\t%d\t%s\t1\t21\n", num_token++, linea, yytext); BEGIN(RESERVED); }
+CONSTRAINT { printf("%d\t%d\t%s\t1\t22\n", num_token++, linea, yytext); BEGIN(RESERVED); }
+KEY { printf("%d\t%d\t%s\t1\t23\n", num_token++, linea, yytext); BEGIN(RESERVED); }
+PRIMARY { printf("%d\t%d\t%s\t1\t24\n", num_token++, linea, yytext); BEGIN(RESERVED); }
+FOREIGN { printf("%d\t%d\t%s\t1\t25\n", num_token++, linea, yytext); BEGIN(RESERVED); }
+REFERENCES { printf("%d\t%d\t%s\t1\t26\n", num_token++, linea, yytext); BEGIN(RESERVED); }
+INSERT { printf("%d\t%d\t%s\t1\t27\n", num_token++, linea, yytext); BEGIN(RESERVED); }
+INTO { printf("%d\t%d\t%s\t1\t28\n", num_token++, linea, yytext); BEGIN(RESERVED); }
+VALUES { printf("%d\t%d\t%s\t1\t29\n", num_token++, linea, yytext); BEGIN(RESERVED); }
+.|\n { if (*yytext == '\n') linea++; }
 %%
 
-SELECT      { printf("SELECT\n"); }
-FROM        { printf("FROM\n"); }
-WHERE       { printf("WHERE\n"); }
-AND         { printf("AND\n"); }
-[A-Za-z]+   { printf("NOMBRE DE COLUMNA: %s\n", yytext); }
-'[^']*'     { printf("VALOR: %s\n", yytext); }
-">="        { printf("OPERADOR: >=\n"); }
-,           { printf("COMA\n"); }
-;           { printf("PUNTO Y COMA\n"); }
-[ \t\n]+    { /* ignorar espacios en blanco y saltos de línea */ }
-.           { printf("CARACTER DESCONOCIDO: %s\n", yytext); }
-
-%%
-
-int main()
-{
+int main() {
     FILE *archivo = fopen("texto.txt", "r");
     yyin = archivo;
+    printf("Num\tLinea\tToken\tTipo\tCodigo\n");
     yylex();
     fclose(archivo);
     return 0;
+}
+
+int yywrap() {
+    return 1;
 }
