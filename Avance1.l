@@ -2,13 +2,15 @@
 #include <stdio.h>
 int linea = 1;
 int num_token = 1;
-int constantesValores = 400;
 %}
+
+IDENTIFIER [A-Za-z][A-Za-z0-9_]*
+CONSTANT   '[^']*'
 
 /* Definición de tokens */
 %s RESERVED
 
-/* Palabras reservadas */
+/* Palabras reservadas, delimitadores, operadores */
 %%
 SELECT { printf("%d\t%d\t%s\t1\t10\n", num_token++, linea, yytext); BEGIN(RESERVED); }
 FROM { printf("%d\t%d\t%s\t1\t11\n", num_token++, linea, yytext); BEGIN(RESERVED); }
@@ -30,15 +32,28 @@ REFERENCES { printf("%d\t%d\t%s\t1\t26\n", num_token++, linea, yytext); BEGIN(RE
 INSERT { printf("%d\t%d\t%s\t1\t27\n", num_token++, linea, yytext); BEGIN(RESERVED); }
 INTO { printf("%d\t%d\t%s\t1\t28\n", num_token++, linea, yytext); BEGIN(RESERVED); }
 VALUES { printf("%d\t%d\t%s\t1\t29\n", num_token++, linea, yytext); BEGIN(RESERVED); }
+
 "," { printf("%d\t%d\t%s\t5\t50\n", num_token++, linea, yytext); }
 "." { printf("%d\t%d\t%s\t5\t51\n", num_token++, linea, yytext); }
 "(" { printf("%d\t%d\t%s\t5\t52\n", num_token++, linea, yytext); }
 ")" { printf("%d\t%d\t%s\t5\t53\n", num_token++, linea, yytext); }
 "'" { printf("%d\t%d\t%s\t5\t54\n", num_token++, linea, yytext); }
-[[:alpha:]_][[:alnum:]_]*    { if(yytext[0] != '\'') printf("%d\t%d\t%s\t401\t62\n", num_token++, linea, yytext); }
-’[[:alpha:]_][[:alnum:]_]*|[[:digit:]]+[[:alpha:]][[:alnum:]_]*’ { printf("%d\t%d\t%s\t0\t62\n", num_token++, linea, yytext); BEGIN(RESERVED); }
 
-[0-9]+   { printf("%d\t%d\t%s\t6\t61\n", num_token++, linea, yytext); BEGIN(RESERVED); }
+"+" { printf("%d\t%d\t%s\t7\t70\n", num_token++, linea, yytext); }
+"-" { printf("%d\t%d\t%s\t7\t71\n", num_token++, linea, yytext); }
+"*" { printf("%d\t%d\t%s\t7\t72\n", num_token++, linea, yytext); }
+"/" { printf("%d\t%d\t%s\t7\t73\n", num_token++, linea, yytext); }
+
+">" { printf("%d\t%d\t%s\t8\t81\n", num_token++, linea, yytext); }
+"<" { printf("%d\t%d\t%s\t8\t82\n", num_token++, linea, yytext); }
+"=" { printf("%d\t%d\t%s\t8\t83\n", num_token++, linea, yytext); }
+">=" { printf("%d\t%d\t%s\t8\t84\n", num_token++, linea, yytext); }
+"<=" { printf("%d\t%d\t%s\t8\t85\n", num_token++, linea, yytext); }
+
+[[:alpha:]_][[:alnum:]_]*    { if(yytext[0] != '\'') printf("%d\t%d\t%s\t401\t62\n", num_token++, linea, yytext); }
+’[[:alpha:]_][[:alnum:]_]*|[[:digit:]]+[[:alpha:]][[:alnum:]_]*’ { printf("%d\t%d\t%s\t6\t600\n", num_token++, linea, yytext); BEGIN(RESERVED); }
+[0-9]+ { printf("%d\t%d\t%s\t6\t61\n", num_token++, linea, yytext); BEGIN(RESERVED); }
+
 .|\n { if (*yytext == '\n') linea++; }
 %%
 
