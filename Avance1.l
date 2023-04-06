@@ -29,6 +29,11 @@ REFERENCES { printf("%d\t%d\t%s\t1\t26\n", num_token++, linea, yytext); BEGIN(RE
 INSERT { printf("%d\t%d\t%s\t1\t27\n", num_token++, linea, yytext); BEGIN(RESERVED); }
 INTO { printf("%d\t%d\t%s\t1\t28\n", num_token++, linea, yytext); BEGIN(RESERVED); }
 VALUES { printf("%d\t%d\t%s\t1\t29\n", num_token++, linea, yytext); BEGIN(RESERVED); }
+"," { printf("%d\t%d\t%s\t5\t29\n", num_token++, linea, yytext); }
+"." { printf("%d\t%d\t%s\t5\t29\n", num_token++, linea, yytext); }
+"(" { printf("%d\t%d\t%s\t5\t29\n", num_token++, linea, yytext); }
+")" { printf("%d\t%d\t%s\t5\t29\n", num_token++, linea, yytext); }
+"'" { printf("%d\t%d\t%s\t5\t29\n", num_token++, linea, yytext); }
 .|\n { if (*yytext == '\n') linea++; }
 %%
 
