@@ -2,6 +2,8 @@
 #include <stdio.h>
 int linea = 1;
 int num_token = 1;
+int contador_ident = 400;
+int contador_const = 600;
 %}
 
 IDENTIFIER [A-Za-z][A-Za-z0-9_]*
@@ -50,9 +52,9 @@ VALUES { printf("%d\t%d\t%s\t1\t29\n", num_token++, linea, yytext); BEGIN(RESERV
 ">=" { printf("%d\t%d\t%s\t8\t84\n", num_token++, linea, yytext); }
 "<=" { printf("%d\t%d\t%s\t8\t85\n", num_token++, linea, yytext); }
 
-[[:alpha:]_][[:alnum:]_]*    { if(yytext[0] != '\'') printf("%d\t%d\t%s\t401\t62\n", num_token++, linea, yytext); }
-’[[:alpha:]_][[:alnum:]_]*|[[:digit:]]+[[:alpha:]][[:alnum:]_]*’ { printf("%d\t%d\t%s\t6\t600\n", num_token++, linea, yytext); BEGIN(RESERVED); }
-[0-9]+ { printf("%d\t%d\t%s\t6\t61\n", num_token++, linea, yytext); BEGIN(RESERVED); }
+[[:alpha:]_][[:alnum:]_]*    { if(yytext[0] != '\'') printf("%d\t%d\t%s\t%d\t62\n", num_token++, linea, yytext, contador_ident); contador_ident++; }
+’[[:alpha:]_][[:alnum:]_]*|[[:digit:]]+[[:alpha:]][[:alnum:]_]*’ { printf("%d\t%d\t%s\t6\t%d\n", num_token++, linea, yytext, contador_const); BEGIN(RESERVED); contador_const++; }
+[0-9]+ { printf("%d\t%d\t%s\t6\t%d\n", num_token++, linea, yytext, contador_const); BEGIN(RESERVED); contador_const++; }
 
 .|\n { if (*yytext == '\n') linea++; }
 %%
