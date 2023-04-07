@@ -58,7 +58,7 @@ VALUES { printf("%d\t%d\t%s\t1\t29\n", num_token++, linea, yytext); BEGIN(RESERV
 "." { printf("%d\t%d\t%s\t5\t51\n", num_token++, linea, yytext); }
 "(" { printf("%d\t%d\t%s\t5\t52\n", num_token++, linea, yytext); }
 ")" { printf("%d\t%d\t%s\t5\t53\n", num_token++, linea, yytext); }
-"'" { printf("%d\t%d\t%s\t5\t54\n", num_token++, linea, yytext); }
+"‘" { printf("%d\t%d\t%s\t5\t54\n", num_token++, linea, yytext); }
 
 "+" { printf("%d\t%d\t%s\t7\t70\n", num_token++, linea, yytext); }
 "-" { printf("%d\t%d\t%s\t7\t71\n", num_token++, linea, yytext); }
@@ -80,7 +80,7 @@ VALUES { printf("%d\t%d\t%s\t1\t29\n", num_token++, linea, yytext); BEGIN(RESERV
     tabla_ident[num_ident++] = nuevo_ident;
     contador_ident++;
 }
-’[[:alpha:]_][[:alnum:]_]*|[[:digit:]]+[[:alpha:]][[:alnum:]_]*’ { 
+'[[:alpha:]_][[:alnum:]_]*|[[:digit:]]+[[:alpha:]][[:alnum:]_]*' { 
     printf("%d\t%d\t%s\t%d\t6\n", num_token++, linea, yytext, contador_const);
     constante nueva_const;
     strcpy(nueva_const.nombre, yytext);
