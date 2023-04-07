@@ -1,8 +1,27 @@
 %{
 #include <stdio.h>
+#include <string.h>
+
+typedef struct {
+    char nombre[100];
+    char valor[100];
+    int linea;
+} identificador;
+
+typedef struct {
+    char nombre[50];
+    char tipo[10];
+    char valor[50];
+    int linea;
+} constante;
+
+int num_ident = 0;
+identificador tabla_ident[100];
+constante tabla_const[100];
+int num_const = 0;
 int linea = 1;
 int num_token = 1;
-int contador_ident = 400;
+int contador_ident = 401;
 int contador_const = 600;
 %}
 
@@ -52,9 +71,35 @@ VALUES { printf("%d\t%d\t%s\t1\t29\n", num_token++, linea, yytext); BEGIN(RESERV
 ">=" { printf("%d\t%d\t%s\t8\t84\n", num_token++, linea, yytext); }
 "<=" { printf("%d\t%d\t%s\t8\t85\n", num_token++, linea, yytext); }
 
-[[:alpha:]_][[:alnum:]_]*    { if(yytext[0] != '\'') printf("%d\t%d\t%s\t%d\t62\n", num_token++, linea, yytext, contador_ident); contador_ident++; }
-’[[:alpha:]_][[:alnum:]_]*|[[:digit:]]+[[:alpha:]][[:alnum:]_]*’ { printf("%d\t%d\t%s\t6\t%d\n", num_token++, linea, yytext, contador_const); BEGIN(RESERVED); contador_const++; }
-[0-9]+ { printf("%d\t%d\t%s\t6\t%d\n", num_token++, linea, yytext, contador_const); BEGIN(RESERVED); contador_const++; }
+[[:alpha:]_][[:alnum:]_]* {
+    printf("%d\t%d\t%s\t%d\t62\n", num_token++, linea, yytext, contador_ident);
+    identificador nuevo_ident;
+    strcpy(nuevo_ident.nombre, yytext);
+    sprintf(nuevo_ident.valor, "%d", contador_ident);
+    nuevo_ident.linea = linea;
+    tabla_ident[num_ident++] = nuevo_ident;
+    contador_ident++;
+}
+’[[:alpha:]_][[:alnum:]_]*|[[:digit:]]+[[:alpha:]][[:alnum:]_]*’ { 
+    printf("%d\t%d\t%s\t%d\t6\n", num_token++, linea, yytext, contador_const);
+    constante nueva_const;
+    strcpy(nueva_const.nombre, yytext);
+    strcpy(nueva_const.tipo, "int"); 
+    strcpy(nueva_const.valor, yytext);
+    nueva_const.linea = linea;
+    tabla_const[num_const++] = nueva_const;
+    contador_const++; }
+
+[0-9]+ {  
+    printf("%d\t%d\t%s\t%d\t64\n", num_token++, linea, yytext, contador_const);
+    constante nueva_const;
+    strcpy(nueva_const.nombre, yytext);
+    strcpy(nueva_const.tipo, "int"); 
+    strcpy(nueva_const.valor, yytext);
+    nueva_const.linea = linea;
+    tabla_const[num_const++] = nueva_const;
+    contador_const++;
+}
 
 .|\n { if (*yytext == '\n') linea++; }
 %%
@@ -62,8 +107,19 @@ VALUES { printf("%d\t%d\t%s\t1\t29\n", num_token++, linea, yytext); BEGIN(RESERV
 int main() {
     FILE *archivo = fopen("texto.txt", "r");
     yyin = archivo;
+    printf("\n--Tabla lexica--\n");
     printf("Num\tLinea\tToken\tTipo\tCodigo\n");
     yylex();
+    printf("\n--Tabla de identificadores--\n");
+    printf("Nombre\tValor\tLínea\n");
+    for(int i=0; i<num_ident; i++) {
+        printf("%s\t%s\t%d\n", tabla_ident[i].nombre, tabla_ident[i].valor, tabla_ident[i].linea);
+    }
+    printf("\n--Tabla de constantes--\n");
+    printf("No.\tConstante\tTipo\tValor\n");
+    for (int i = 0; i < num_const; i++) {
+        printf("%d\t%s\t%s\t%s\n", i+1, tabla_const[i].nombre, tabla_const[i].tipo, tabla_const[i].valor);
+    }
     fclose(archivo);
     return 0;
 }
