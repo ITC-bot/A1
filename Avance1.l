@@ -17,12 +17,12 @@ typedef struct {
 
 int num_ident = 0;
 identificador tabla_ident[100];
-constante tabla_const[100];
-int num_const = 0;
 int linea = 1;
 int num_token = 1;
 int contador_ident = 401;
 int contador_const = 600;
+constante tabla_const[100];
+int num_const = 0;
 %}
 
 IDENTIFIER [A-Za-z][A-Za-z0-9_]*
@@ -84,18 +84,19 @@ VALUES { printf("%d\t%d\t%s\t1\t29\n", num_token++, linea, yytext); BEGIN(RESERV
     printf("%d\t%d\t%s\t%d\t6\n", num_token++, linea, yytext, contador_const);
     constante nueva_const;
     strcpy(nueva_const.nombre, yytext);
-    strcpy(nueva_const.tipo, "int"); 
-    strcpy(nueva_const.valor, yytext);
+    strcpy(nueva_const.tipo, "62"); 
+    sprintf(nueva_const.valor, "%d", contador_const);
     nueva_const.linea = linea;
     tabla_const[num_const++] = nueva_const;
-    contador_const++; }
+    contador_const++;
+}
 
 [0-9]+ {  
     printf("%d\t%d\t%s\t%d\t64\n", num_token++, linea, yytext, contador_const);
     constante nueva_const;
     strcpy(nueva_const.nombre, yytext);
-    strcpy(nueva_const.tipo, "int"); 
-    strcpy(nueva_const.valor, yytext);
+    strcpy(nueva_const.tipo, "61"); 
+    sprintf(nueva_const.valor, "%d", contador_const);
     nueva_const.linea = linea;
     tabla_const[num_const++] = nueva_const;
     contador_const++;
