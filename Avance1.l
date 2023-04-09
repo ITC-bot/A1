@@ -33,6 +33,9 @@ CONSTANT   '[^']*'
 
 /* Palabras reservadas, delimitadores, operadores */
 %%
+
+[ \t\n\r]+
+
 SELECT { printf("%d\t%d\t%s\t1\t10\n", num_token++, linea, yytext); BEGIN(RESERVED); }
 FROM { printf("%d\t%d\t%s\t1\t11\n", num_token++, linea, yytext); BEGIN(RESERVED); }
 WHERE { printf("%d\t%d\t%s\t1\t12\n", num_token++, linea, yytext); BEGIN(RESERVED); }
@@ -71,6 +74,8 @@ VALUES { printf("%d\t%d\t%s\t1\t29\n", num_token++, linea, yytext); BEGIN(RESERV
 ">=" { printf("%d\t%d\t%s\t8\t84\n", num_token++, linea, yytext); }
 "<=" { printf("%d\t%d\t%s\t8\t85\n", num_token++, linea, yytext); }
 
+. { printf("Error: unknown character %s\n", yytext); }
+
 [[:alpha:]_][[:alnum:]_]* {
     printf("%d\t%d\t%s\t%d\t62\n", num_token++, linea, yytext, contador_ident);
     identificador nuevo_ident;
@@ -80,6 +85,7 @@ VALUES { printf("%d\t%d\t%s\t1\t29\n", num_token++, linea, yytext); BEGIN(RESERV
     tabla_ident[num_ident++] = nuevo_ident;
     contador_ident++;
 }
+
 '[[:alpha:]_][[:alnum:]_]*|[[:digit:]]+[[:alpha:]][[:alnum:]_]*' { 
     printf("%d\t%d\t%s\t%d\t6\n", num_token++, linea, yytext, contador_const);
     constante nueva_const;
@@ -102,8 +108,16 @@ VALUES { printf("%d\t%d\t%s\t1\t29\n", num_token++, linea, yytext); BEGIN(RESERV
     contador_const++;
 }
 
-.|\n { if (*yytext == '\n') linea++; }
+
+
+
 %%
+
+void yyerror(const char *mensaje)
+{
+    printf("Error léxico en la línea %d: %s\n", linea, mensaje);
+    exit(EXIT_FAILURE);
+}
 
 int main() {
     FILE *archivo = fopen("texto.txt", "r");
