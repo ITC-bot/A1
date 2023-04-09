@@ -24,9 +24,19 @@ int contador_const = 600;
 constante tabla_const[100];
 int num_const = 0;
 
-void yyerror(const char *mensaje) {
-    fprintf(stderr, "Error linea %d: %s\n", linea, mensaje);
+char mensajes_error[1000] = "";
+
+void agregar_error(const char *mensaje) {
+    strcat(mensajes_error, mensaje);
+    strcat(mensajes_error, "\n");
 }
+
+void yyerror(const char *mensaje) {
+    char error[100];
+    sprintf(error, "Error linea %d: %s", linea, mensaje);
+    agregar_error(error);
+}
+
 
 %}
 
@@ -128,6 +138,9 @@ int main() {
     printf("No.\tConstante\tTipo\tValor\n");
     for (int i = 0; i < num_const; i++) {
         printf("%d\t%s\t%s\t%s\n", i+1, tabla_const[i].nombre, tabla_const[i].tipo, tabla_const[i].valor);
+    }
+    if (strlen(mensajes_error) > 0) {
+        printf("\nMensajes de error:\n%s", mensajes_error);
     }
     return 0;
 }
