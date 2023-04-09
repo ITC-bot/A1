@@ -23,12 +23,6 @@ int contador_ident = 401;
 int contador_const = 600;
 constante tabla_const[100];
 int num_const = 0;
-
-void yyerror(const char *mensaje) {
-    fprintf(stderr, "Error linea %d: %s\n", linea, mensaje);
-}
-
-
 %}
 
 IDENTIFIER [A-Za-z][A-Za-z0-9_]*
@@ -40,7 +34,8 @@ CONSTANT   '[^']*'
 /* Palabras reservadas, delimitadores, operadores */
 %%
 
-[ \t\n\r]+
+[ \t\r]+ {}
+[\n]     { linea++; }
 
 SELECT { printf("%d\t%d\t%s\t1\t10\n", num_token++, linea, yytext); BEGIN(RESERVED); }
 FROM { printf("%d\t%d\t%s\t1\t11\n", num_token++, linea, yytext); BEGIN(RESERVED); }
@@ -80,7 +75,7 @@ VALUES { printf("%d\t%d\t%s\t1\t29\n", num_token++, linea, yytext); BEGIN(RESERV
 ">=" { printf("%d\t%d\t%s\t8\t84\n", num_token++, linea, yytext); }
 "<=" { printf("%d\t%d\t%s\t8\t85\n", num_token++, linea, yytext); }
 
-. {  yyerror("Caracter desconocido"); }
+. { printf("Error: unknown character %s\n", yytext); }
 
 [[:alpha:]_][[:alnum:]_]* {
     printf("%d\t%d\t%s\t%d\t62\n", num_token++, linea, yytext, contador_ident);
