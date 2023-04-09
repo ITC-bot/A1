@@ -141,6 +141,8 @@ int main() {
     }
     if (strlen(mensajes_error) > 0) {
         printf("\nMensajes de error:\n%s", mensajes_error);
+    }else{
+        printf("\n1:100 Sin errores\n");
     }
     return 0;
 }
