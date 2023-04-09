@@ -90,7 +90,7 @@ VALUES { printf("%d\t%d\t%s\t1\t29\n", num_token++, linea, yytext); BEGIN(RESERV
 }
 
 '([^']*)' { 
-    printf("%d\t%d\t%s\t%d\t6\n", num_token++, linea, yytext, contador_const);
+    printf("%d\t%d\t%s\t6\t%d\n", num_token++, linea, yytext, contador_const);
     constante nueva_const;
     strcpy(nueva_const.nombre, yytext);
     strcpy(nueva_const.tipo, "62"); 
@@ -101,7 +101,7 @@ VALUES { printf("%d\t%d\t%s\t1\t29\n", num_token++, linea, yytext); BEGIN(RESERV
 }
 
 [0-9]+ {  
-    printf("%d\t%d\t%s\t%d\t64\n", num_token++, linea, yytext, contador_const);
+    printf("%d\t%d\t%s\t6\t%d\n", num_token++, linea, yytext, contador_const);
     constante nueva_const;
     strcpy(nueva_const.nombre, yytext);
     strcpy(nueva_const.tipo, "61"); 
@@ -129,7 +129,6 @@ int main() {
     for (int i = 0; i < num_const; i++) {
         printf("%d\t%s\t%s\t%s\n", i+1, tabla_const[i].nombre, tabla_const[i].tipo, tabla_const[i].valor);
     }
-    fclose(archivo);
     return 0;
 }
 
