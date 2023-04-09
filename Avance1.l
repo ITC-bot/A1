@@ -86,7 +86,7 @@ VALUES { printf("%d\t%d\t%s\t1\t29\n", num_token++, linea, yytext); BEGIN(RESERV
     contador_ident++;
 }
 
-'[[:alpha:]_][[:alnum:]_]*|[[:digit:]]+[[:alpha:]][[:alnum:]_]*' { 
+'([^']*)' { 
     printf("%d\t%d\t%s\t%d\t6\n", num_token++, linea, yytext, contador_const);
     constante nueva_const;
     strcpy(nueva_const.nombre, yytext);
