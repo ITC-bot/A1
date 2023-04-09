@@ -2,8 +2,6 @@
 #include <stdio.h>
 #include <string.h>
 
-
-
 typedef struct {
     char nombre[100];
     char valor[100];
@@ -32,20 +30,15 @@ void yyerror(const char *mensaje) {
 
 %}
 
-
 IDENTIFIER [A-Za-z][A-Za-z0-9_]*
 CONSTANT   '[^']*'
 
-
-/* Definición de tokens */
 %s RESERVED
 
-/* Palabras reservadas, delimitadores, operadores */
-%%
 
+%%
 [ \t\r]+ {}
 [\n]     { linea++; }
-
 SELECT { printf("%d\t%d\t%s\t1\t10\n", num_token++, linea, yytext); BEGIN(RESERVED); }
 FROM { printf("%d\t%d\t%s\t1\t11\n", num_token++, linea, yytext); BEGIN(RESERVED); }
 WHERE { printf("%d\t%d\t%s\t1\t12\n", num_token++, linea, yytext); BEGIN(RESERVED); }
@@ -87,7 +80,7 @@ VALUES { printf("%d\t%d\t%s\t1\t29\n", num_token++, linea, yytext); BEGIN(RESERV
 . { yyerror("Caracter desconocido"); }
 
 [[:alpha:]_][[:alnum:]_]* {
-    printf("%d\t%d\t%s\t%d\t62\n", num_token++, linea, yytext, contador_ident);
+    printf("%d\t%d\t%s\t4\t%d\n", num_token++, linea, yytext, contador_ident);
     identificador nuevo_ident;
     strcpy(nuevo_ident.nombre, yytext);
     sprintf(nuevo_ident.valor, "%d", contador_ident);
@@ -139,8 +132,6 @@ int main() {
     fclose(archivo);
     return 0;
 }
-
-
 
 int yywrap() {
     return 1;
