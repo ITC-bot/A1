@@ -38,6 +38,7 @@ void yyerror(const char *mensaje) {
 }
 
 
+
 %}
 
 IDENTIFIER [A-Za-z][A-Za-z0-9_]*
@@ -124,25 +125,51 @@ VALUES { printf("%d\t%d\t%s\t1\t29\n", num_token++, linea, yytext); BEGIN(RESERV
 %%
 
 int main() {
-    FILE *archivo = fopen("texto.txt", "r");
-    yyin = archivo;
-    printf("\n--Tabla lexica--\n");
-    printf("Num\tLinea\tToken\tTipo\tCodigo\n");
-    yylex();
-    printf("\n--Tabla de identificadores--\n");
-    printf("Nombre\tValor\tLínea\n");
-    for(int i=0; i<num_ident; i++) {
-        printf("%s\t%s\t%d\n", tabla_ident[i].nombre, tabla_ident[i].valor, tabla_ident[i].linea);
-    }
-    printf("\n--Tabla de constantes--\n");
-    printf("No.\tConstante\tTipo\tValor\n");
-    for (int i = 0; i < num_const; i++) {
-        printf("%d\t%s\t%s\t%s\n", i+1, tabla_const[i].nombre, tabla_const[i].tipo, tabla_const[i].valor);
-    }
-    if (strlen(mensajes_error) > 0) {
-        printf("\nMensajes de error:\n%s", mensajes_error);
-    }else{
-        printf("\n1:100 Sin errores\n");
+    while(1) {
+
+char mensajes_error[1000] = "";
+        char input[1000];
+        int pos = 0;
+
+        printf("Enter input, end with '%%':");
+
+        while (1) {
+            char c = getchar();
+            if (c == '%') {
+                input[pos] = '\0';
+                break;
+            }
+            input[pos] = c;
+            pos++;
+        }
+
+        printf("\n--Tabla lexica--\n");
+        YY_BUFFER_STATE buffer = yy_scan_string(input);
+        yylex();
+        printf("Num\tLinea\tToken\tTipo\tCodigo\n");
+        printf("\n--Tabla de identificadores--\n");
+        printf("Nombre\tValor\tLínea\n");
+        for(int i=0; i<num_ident; i++) {
+            printf("%s\t%s\t%d\n", tabla_ident[i].nombre, tabla_ident[i].valor, tabla_ident[i].linea);
+        }
+        printf("\n--Tabla de constantes--\n");
+        printf("No.\tConstante\tTipo\tValor\n");
+        for (int i = 0; i < num_const; i++) {
+            printf("%d\t%s\t%s\t%s\n", i+1, tabla_const[i].nombre, tabla_const[i].tipo, tabla_const[i].valor);
+        }
+        if (strlen(mensajes_error) > 0) {
+            printf("\nMensajes de error:\n%s", mensajes_error);
+        }else{
+            printf("\n1:100 Sin errores\n");
+        }
+        printf("char: %s\n", input);
+        yy_delete_buffer(buffer);
+        num_ident = 0;
+        linea = 0;
+        num_token = 1;
+        contador_ident = 401;
+        contador_const = 600;
+        num_const = 0;
     }
     return 0;
 }
