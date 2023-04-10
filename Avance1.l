@@ -36,15 +36,12 @@ void yyerror(const char *mensaje) {
     agregar_error(error);
 }
 
-
-
 %}
 
 IDENTIFIER [A-Za-z][A-Za-z0-9_]*
 CONSTANT   '[^']*'
 
 %s RESERVED
-
 
 %%
 [ \t\r]+ {}
@@ -122,13 +119,12 @@ VALUES { printf("%d\t%d\t%s\t1\t29\n", num_token++, linea, yytext); BEGIN(RESERV
 }
 
 %%
-
 int main() {
     while(1) {
         char input[1000];
         int pos = 0;
 
-        printf("Enter input, end with '%%':");
+        printf("\nEnter input, end with '%%':");
 
         while (1) {
             char c = getchar();
@@ -145,7 +141,7 @@ int main() {
         YY_BUFFER_STATE buffer = yy_scan_string(input);
         yylex();
         printf("\n--Tabla de identificadores--\n");
-        printf("Nombre\tValor\tLínea\n");
+        printf("Nombre\tValor\tLinea\n");
         for(int i=0; i<num_ident; i++) {
             printf("%s\t%s\t%d\n", tabla_ident[i].nombre, tabla_ident[i].valor, tabla_ident[i].linea);
         }
