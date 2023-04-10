@@ -23,7 +23,6 @@ int contador_ident = 401;
 int contador_const = 600;
 constante tabla_const[100];
 int num_const = 0;
-
 char mensajes_error[1000] = "";
 
 void agregar_error(const char *mensaje) {
@@ -126,8 +125,6 @@ VALUES { printf("%d\t%d\t%s\t1\t29\n", num_token++, linea, yytext); BEGIN(RESERV
 
 int main() {
     while(1) {
-
-char mensajes_error[1000] = "";
         char input[1000];
         int pos = 0;
 
@@ -170,6 +167,7 @@ char mensajes_error[1000] = "";
         contador_ident = 401;
         contador_const = 600;
         num_const = 0;
+         strcpy(mensajes_error, "");
     }
     return 0;
 }
