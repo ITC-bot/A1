@@ -36,15 +36,12 @@ void yyerror(const char *mensaje) {
     agregar_error(error);
 }
 
-
-
 %}
 
 IDENTIFIER [A-Za-z][A-Za-z0-9_]*
 CONSTANT   '[^']*'
 
 %s RESERVED
-
 
 %%
 [ \t\r]+ {}
@@ -122,12 +119,11 @@ VALUES { printf("%d\t%d\t%s\t1\t29\n", num_token++, linea, yytext); BEGIN(RESERV
 }
 
 %%
-
 int main() {
     while(1) {
         char input[1000];
         int pos = 0;
-
+        
         printf("Enter input, end with '%%':");
 
         while (1) {
