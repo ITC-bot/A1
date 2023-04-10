@@ -36,12 +36,15 @@ void yyerror(const char *mensaje) {
     agregar_error(error);
 }
 
+
+
 %}
 
 IDENTIFIER [A-Za-z][A-Za-z0-9_]*
 CONSTANT   '[^']*'
 
 %s RESERVED
+
 
 %%
 [ \t\r]+ {}
@@ -96,22 +99,22 @@ VALUES { printf("%d\t%d\t%s\t1\t29\n", num_token++, linea, yytext); BEGIN(RESERV
     contador_ident++;
 }
 
-'([^']*)' { 
+'([^']*)' {
     printf("%d\t%d\t%s\t6\t%d\n", num_token++, linea, yytext, contador_const);
     constante nueva_const;
     strcpy(nueva_const.nombre, yytext);
-    strcpy(nueva_const.tipo, "62"); 
+    strcpy(nueva_const.tipo, "62");
     sprintf(nueva_const.valor, "%d", contador_const);
     nueva_const.linea = linea;
     tabla_const[num_const++] = nueva_const;
     contador_const++;
 }
 
-[0-9]+ {  
+[0-9]+ {
     printf("%d\t%d\t%s\t6\t%d\n", num_token++, linea, yytext, contador_const);
     constante nueva_const;
     strcpy(nueva_const.nombre, yytext);
-    strcpy(nueva_const.tipo, "61"); 
+    strcpy(nueva_const.tipo, "61");
     sprintf(nueva_const.valor, "%d", contador_const);
     nueva_const.linea = linea;
     tabla_const[num_const++] = nueva_const;
@@ -119,11 +122,12 @@ VALUES { printf("%d\t%d\t%s\t1\t29\n", num_token++, linea, yytext); BEGIN(RESERV
 }
 
 %%
+
 int main() {
     while(1) {
         char input[1000];
         int pos = 0;
-        
+
         printf("Enter input, end with '%%':");
 
         while (1) {
@@ -137,9 +141,9 @@ int main() {
         }
 
         printf("\n--Tabla lexica--\n");
+        printf("Num\tLinea\tToken\tTipo\tCodigo\n");
         YY_BUFFER_STATE buffer = yy_scan_string(input);
         yylex();
-        printf("Num\tLinea\tToken\tTipo\tCodigo\n");
         printf("\n--Tabla de identificadores--\n");
         printf("Nombre\tValor\tLínea\n");
         for(int i=0; i<num_ident; i++) {
