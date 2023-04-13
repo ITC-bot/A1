@@ -21,6 +21,7 @@ int linea = 1;
 int num_token = 1;
 int contador_ident = 401;
 int contador_const = 600;
+int error_cont = 101;
 constante tabla_const[100];
 int num_const = 0;
 char mensajes_error[1000] = "";
@@ -32,13 +33,14 @@ void agregar_error(const char *mensaje) {
 
 void yyerror(const char *mensaje) {
     char error[100];
-    sprintf(error, "Error linea %d: %s", linea, mensaje);
+    sprintf(error, "Error 1:%d Linea %d%s", error_cont ,linea, mensaje);
     agregar_error(error);
+    error_cont++;
 }
 
 %}
 
-IDENTIFIER [A-Za-z][A-Za-z0-9_]*
+IDENTIFIER ([A-Za-z]|([A-Za-z][A-Za-z0-9_]*)?\.[A-Za-z][A-Za-z0-9_]*)
 CONSTANT   '[^']*'
 
 %s RESERVED
@@ -84,9 +86,9 @@ VALUES { printf("%d\t%d\t%-8s\t1\t29\n", num_token++, linea, yytext); BEGIN(RESE
 ">=" { printf("%d\t%d\t%-8s\t8\t84\n", num_token++, linea, yytext); }
 "<=" { printf("%d\t%d\t%-8s\t8\t85\n", num_token++, linea, yytext); }
 
-. { yyerror("Caracter desconocido"); }
+. { yyerror(".Simbolo desconocido"); }
 
-[[:alpha:]_][[:alnum:]_]* {
+[[:alpha:]][[:alnum:]_#]*|([[:alpha:]])?\[[:alpha:]][[:alnum:]_#]* {
     printf("%d\t%d\t%-8s\t4\t%d\n", num_token++, linea, yytext, contador_ident);
     identificador nuevo_ident;
     strcpy(nuevo_ident.nombre, yytext);
