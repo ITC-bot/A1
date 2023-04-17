@@ -109,7 +109,7 @@ VALUES { printf("%d\t%d\t%-8s\t1\t29\n", num_token++, linea, yytext); BEGIN(RESE
     contador_const++;
 }
 
-[0-9]+ {
+[0-9]+   {
     printf("%d\t%d\t%-8s\t6\t%d\n", num_token++, linea, yytext, contador_const);
     constante nueva_const;
     strcpy(nueva_const.nombre, yytext);
@@ -119,6 +119,18 @@ VALUES { printf("%d\t%d\t%-8s\t1\t29\n", num_token++, linea, yytext); BEGIN(RESE
     tabla_const[num_const++] = nueva_const;
     contador_const++;
 }
+
+[0-9 ]+    {
+    printf("%d\t%d\t%-8s\t6\t%d\n", num_token++, linea, yytext, contador_const);
+    constante nueva_const;
+    strcpy(nueva_const.nombre, yytext);
+    strcpy(nueva_const.tipo, "61");
+    sprintf(nueva_const.valor, "%d", contador_const);
+    nueva_const.linea = linea;
+    tabla_const[num_const++] = nueva_const;
+    contador_const++;
+}
+
 
 %%
 int main() {
