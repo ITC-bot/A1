@@ -23,7 +23,7 @@ int contador_ident = 401;
 int contador_const = 600;
 int error_cont = 101;
 constante tabla_const[100];
-int num_const = 0;
+int num_const = 1;
 char mensajes_error[1000] = "";
 
 void agregar_error(const char *mensaje) {
@@ -86,10 +86,18 @@ VALUES { printf("%d\t%d\t%-8s\t1\t29\n", num_token++, linea, yytext); BEGIN(RESE
 ">=" { printf("%d\t%d\t%-8s\t8\t84\n", num_token++, linea, yytext); }
 "<=" { printf("%d\t%d\t%-8s\t8\t85\n", num_token++, linea, yytext); }
 
-. { yyerror(".Simbolo desconocido"); }
-
-[[:alpha:]][[:alnum:]_#]*|([[:alpha:]])?\[[:alpha:]][[:alnum:]_#]* {
+[[:alpha:]_#][[:alnum:]_#]*|([[:alpha:]])?.\[[:alpha:]_#][[:alnum:]_#]* {
     printf("%d\t%d\t%-8s\t4\t%d\n", num_token++, linea, yytext, contador_ident);
+    identificador nuevo_ident;
+    strcpy(nuevo_ident.nombre, yytext);
+    sprintf(nuevo_ident.valor, "%d", contador_ident);
+    nuevo_ident.linea = linea;
+    tabla_ident[num_ident++] = nuevo_ident;
+    contador_ident++;
+}
+
+^[a-zA-Z]$ {
+printf("%d\t%d\t%-8s\t4\t%d\n", num_token++, linea, yytext, contador_ident);
     identificador nuevo_ident;
     strcpy(nuevo_ident.nombre, yytext);
     sprintf(nuevo_ident.valor, "%d", contador_ident);
@@ -109,7 +117,7 @@ VALUES { printf("%d\t%d\t%-8s\t1\t29\n", num_token++, linea, yytext); BEGIN(RESE
     contador_const++;
 }
 
-[0-9]+   {
+[0-9 ]+ {
     printf("%d\t%d\t%-8s\t6\t%d\n", num_token++, linea, yytext, contador_const);
     constante nueva_const;
     strcpy(nueva_const.nombre, yytext);
@@ -120,17 +128,7 @@ VALUES { printf("%d\t%d\t%-8s\t1\t29\n", num_token++, linea, yytext); BEGIN(RESE
     contador_const++;
 }
 
-[0-9 ]+    {
-    printf("%d\t%d\t%-8s\t6\t%d\n", num_token++, linea, yytext, contador_const);
-    constante nueva_const;
-    strcpy(nueva_const.nombre, yytext);
-    strcpy(nueva_const.tipo, "61");
-    sprintf(nueva_const.valor, "%d", contador_const);
-    nueva_const.linea = linea;
-    tabla_const[num_const++] = nueva_const;
-    contador_const++;
-}
-
+. { yyerror(".Simbolo desconocido"); }
 
 %%
 int main() {
@@ -161,7 +159,7 @@ int main() {
         }
         printf("\n--Tabla de constantes--\n");
         printf("No.\tConstante\tTipo\tValor\n");
-        for (int i = 0; i < num_const; i++) {
+        for (int i = 1; i < num_const; i++) {
             printf("%d\t%-10s\t%d\t%s\n", i, tabla_const[i].nombre, tabla_const[i].linea, tabla_const[i].valor);
         }
         if (strlen(mensajes_error) > 0) {
@@ -176,7 +174,7 @@ int main() {
         num_token = 1;
         contador_ident = 401;
         contador_const = 600;
-        num_const = 0;
+        num_const = 1;
         strcpy(mensajes_error, "");
     }
     return 0;
