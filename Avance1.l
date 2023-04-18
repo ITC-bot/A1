@@ -175,6 +175,7 @@ int main() {
         contador_ident = 401;
         contador_const = 600;
         num_const = 1;
+        error_cont = 101;
         strcpy(mensajes_error, "");
     }
     return 0;
