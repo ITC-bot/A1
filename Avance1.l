@@ -7,6 +7,7 @@ typedef struct {
     char valor[100];
     int linea;
     int lineas[100];
+    int num_lineas;
 } identificador;
 
 typedef struct {
@@ -24,7 +25,7 @@ int contador_ident = 401;
 int contador_const = 600;
 int error_cont = 101;
 constante tabla_const[100];
-int num_const = 1;
+int num_const = 0;
 char mensajes_error[1000] = "";
 
 void agregar_error(const char *mensaje) {
@@ -40,9 +41,6 @@ void yyerror(const char *mensaje) {
 }
 
 %}
-
-IDENTIFIER ([A-Za-z]|([A-Za-z][A-Za-z0-9_]*)?\.[A-Za-z][A-Za-z0-9_]*)
-CONSTANT   '[^']*'
 
 %s RESERVED
 
@@ -92,6 +90,7 @@ VALUES { printf("%d\t%d\t%-8s\t1\t29\n", num_token++, linea, yytext); BEGIN(RESE
     for (i = 0; i < num_ident; i++) {
         if (strcmp(tabla_ident[i].nombre, yytext) == 0) {
             printf("%d\t%d\t%-8s\t4\t%s\n", num_token++, linea, yytext, tabla_ident[i].valor);
+            tabla_ident[i].lineas[tabla_ident[i].num_lineas++] = linea;
             break;
         }
     }
@@ -100,7 +99,8 @@ VALUES { printf("%d\t%d\t%-8s\t1\t29\n", num_token++, linea, yytext); BEGIN(RESE
         identificador nuevo_ident;
         strcpy(nuevo_ident.nombre, yytext);
         sprintf(nuevo_ident.valor, "%d", contador_ident);
-        nuevo_ident.linea = linea;
+        nuevo_ident.num_lineas = 1;
+        nuevo_ident.lineas[0] = linea;
         tabla_ident[num_ident++] = nuevo_ident;
         contador_ident++;
     }
@@ -171,17 +171,21 @@ int main() {
         printf("Num\tLinea\tToken\t       Tipo\tCodigo\n");
         YY_BUFFER_STATE buffer = yy_scan_string(input);
         yylex();
-        
-        printf("\n--Tabla de identificadores--\n");
-        printf("Nombre\t       Valor\tLinea\n");
-        for(int i=0; i<num_ident; i++) {
-            printf("%-16s%-10s%d\n", tabla_ident[i].nombre, tabla_ident[i].valor, tabla_ident[i].linea);
+    
+    printf("\n--Tabla de identificadores--\n");
+    printf("Nombre\t       Valor\tLineas\n");
+    for(int i=0; i<num_ident; i++) {
+        printf("%-16s%-10s", tabla_ident[i].nombre, tabla_ident[i].valor);
+        for (int j = 0; j < tabla_ident[i].num_lineas; j++) {
+            printf("%d ", tabla_ident[i].lineas[j]);
         }
+        printf("\n");
+    }
 
         printf("\n--Tabla de constantes--\n");
         printf("No.\tConstante\tTipo\tValor\n");
-        for (int i = 1; i < num_const; i++) {
-            printf("%d\t%-10s\t%d\t%s\n", i, tabla_const[i].nombre, tabla_const[i].linea, tabla_const[i].valor);
+        for (int i = 0; i < num_const; i++) {
+            printf("%d\t%-10s\t%s\t%s\n", i+1, tabla_const[i].nombre, tabla_const[i].tipo, tabla_const[i].valor);
         }
 
         if (strlen(mensajes_error) > 0) {
@@ -189,7 +193,7 @@ int main() {
         }else{
             printf("\n1:100 Sin errores\n");
         }
-        
+
         printf("char: %s\n", input);
         yy_delete_buffer(buffer);
         num_ident = 0;
@@ -197,7 +201,7 @@ int main() {
         num_token = 1;
         contador_ident = 401;
         contador_const = 600;
-        num_const = 1;
+        num_const = 0;
         error_cont = 101;
         strcpy(mensajes_error, "");
     }
