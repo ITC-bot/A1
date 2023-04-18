@@ -87,23 +87,41 @@ VALUES { printf("%d\t%d\t%-8s\t1\t29\n", num_token++, linea, yytext); BEGIN(RESE
 "<=" { printf("%d\t%d\t%-8s\t8\t85\n", num_token++, linea, yytext); }
 
 [[:alpha:]_#][[:alnum:]_#]*|([[:alpha:]])?.\[[:alpha:]_#][[:alnum:]_#]* {
-    printf("%d\t%d\t%-8s\t4\t%d\n", num_token++, linea, yytext, contador_ident);
-    identificador nuevo_ident;
-    strcpy(nuevo_ident.nombre, yytext);
-    sprintf(nuevo_ident.valor, "%d", contador_ident);
-    nuevo_ident.linea = linea;
-    tabla_ident[num_ident++] = nuevo_ident;
-    contador_ident++;
+    int i;
+    for (i = 0; i < num_ident; i++) {
+        if (strcmp(tabla_ident[i].nombre, yytext) == 0) {
+            printf("%d\t%d\t%-8s\t4\t%s\n", num_token++, linea, yytext, tabla_ident[i].valor);
+            break;
+        }
+    }
+    if (i == num_ident) {
+        printf("%d\t%d\t%-8s\t4\t%d\n", num_token++, linea, yytext, contador_ident);
+        identificador nuevo_ident;
+        strcpy(nuevo_ident.nombre, yytext);
+        sprintf(nuevo_ident.valor, "%d", contador_ident);
+        nuevo_ident.linea = linea;
+        tabla_ident[num_ident++] = nuevo_ident;
+        contador_ident++;
+    }
 }
 
 ^[a-zA-Z]$ {
-printf("%d\t%d\t%-8s\t4\t%d\n", num_token++, linea, yytext, contador_ident);
-    identificador nuevo_ident;
-    strcpy(nuevo_ident.nombre, yytext);
-    sprintf(nuevo_ident.valor, "%d", contador_ident);
-    nuevo_ident.linea = linea;
-    tabla_ident[num_ident++] = nuevo_ident;
-    contador_ident++;
+    int i;
+    for (i = 0; i < num_ident; i++) {
+        if (strcmp(tabla_ident[i].nombre, yytext) == 0) {
+            printf("%d\t%d\t%-8s\t4\t%s\n", num_token++, linea, yytext, tabla_ident[i].valor);
+            break;
+        }
+    }
+    if (i == num_ident) {
+        printf("%d\t%d\t%-8s\t4\t%d\n", num_token++, linea, yytext, contador_ident);
+        identificador nuevo_ident;
+        strcpy(nuevo_ident.nombre, yytext);
+        sprintf(nuevo_ident.valor, "%d", contador_ident);
+        nuevo_ident.linea = linea;
+        tabla_ident[num_ident++] = nuevo_ident;
+        contador_ident++;
+    }
 }
 
 '([^']*)' {
