@@ -6,6 +6,7 @@ typedef struct {
     char nombre[100];
     char valor[100];
     int linea;
+    int lineas[100];
 } identificador;
 
 typedef struct {
@@ -170,21 +171,25 @@ int main() {
         printf("Num\tLinea\tToken\t       Tipo\tCodigo\n");
         YY_BUFFER_STATE buffer = yy_scan_string(input);
         yylex();
+        
         printf("\n--Tabla de identificadores--\n");
         printf("Nombre\t       Valor\tLinea\n");
         for(int i=0; i<num_ident; i++) {
             printf("%-16s%-10s%d\n", tabla_ident[i].nombre, tabla_ident[i].valor, tabla_ident[i].linea);
         }
+
         printf("\n--Tabla de constantes--\n");
         printf("No.\tConstante\tTipo\tValor\n");
         for (int i = 1; i < num_const; i++) {
             printf("%d\t%-10s\t%d\t%s\n", i, tabla_const[i].nombre, tabla_const[i].linea, tabla_const[i].valor);
         }
+
         if (strlen(mensajes_error) > 0) {
             printf("\nMensajes de error:\n%s", mensajes_error);
         }else{
             printf("\n1:100 Sin errores\n");
         }
+        
         printf("char: %s\n", input);
         yy_delete_buffer(buffer);
         num_ident = 0;
